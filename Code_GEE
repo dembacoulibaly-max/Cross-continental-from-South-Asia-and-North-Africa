@@ -1,0 +1,1164 @@
+
+Map.addLayer(bangladesh, {color: 'red'}, 'Bangladesh');
+var srtm_maroc = fiil_morocco.clip(maroc);
+var srtm_bangla = fill_bangladesh.clip(bangladesh);
+var stats_maroc = srtm_maroc.reduceRegion({
+  reducer: ee.Reducer.minMax(),
+  geometry: maroc,
+  scale: 30,
+  maxPixels: 1e9
+});
+var stats_ban = srtm_bangla.reduceRegion({
+  reducer: ee.Reducer.minMax(),
+  geometry: bangladesh,
+  scale: 30,
+  maxPixels: 1e9
+});
+
+Export.image.toDrive({
+  image: srtm_maroc,
+  description: "SRTM_Maroc",
+  scale: 30,
+  region: maroc,
+  crs: "EPSG:4326",
+  maxPixels: 1e13
+});
+Export.image.toDrive({
+  image: srtm_bangla,
+  description: "SRTM_bangladesh",
+  scale: 30,
+  region: bangladesh,
+  crs: "EPSG:4326",
+  maxPixels: 1e13
+});
+var coupeshp = ee.FeatureCollection([ee.Feature(coupe,{name: 'Zone1'})]);
+Export.table.toDrive({
+  collection: coupeshp,            
+  description: 'export_polygon', 
+  folder: 'GEE_exports',         
+  fileNamePrefix: 'polygon_shp', 
+  fileFormat: 'SHP'              
+});
+//print('Min/Max SRTM Maroc:', stats_maroc);
+//print('Min/Max SRTM Maroc:', stats_ban);
+var visParamsba = {
+  min: 6,
+  max: 24,  
+  palette: ['blue', 'yellow', 'red']
+};
+var visParamsma = {
+  min: -7,
+  max: 793,  
+  palette: ['blue', 'yellow', 'red']
+};
+
+
+//Map.centerObject(maroc, 10);
+//Map.addLayer(srtm_maroc, visParamsma, 'SRTM maroc');
+//Map.addLayer(srtm_bangla, visParamsba, 'SRTM bangla');
+
+Export.image.toAsset({
+  image: srtm_maroc,
+  description: 'Export_SRTM_Maroc',
+  assetId: 'projects/ee-dembacoulibaly/assets/compa/srtm_maroc',
+  region: maroc,
+  scale: 30,
+  maxPixels: 1e13
+});
+
+Export.image.toAsset({
+  image: srtm_bangla,
+  description: 'Export_SRTM_Bangla',
+  assetId: 'projects/ee-dembacoulibaly/assets/compa/srtm_bangla',
+  region: bangladesh,
+  scale: 30,
+  maxPixels: 1e13
+});
+
+
+var slope_maroc = ee.Terrain.slope(srtm_maroc);
+var slope_ban = ee.Terrain.slope(srtm_bangla);
+var stats_slope_maroc = slope_maroc.reduceRegion({
+  reducer: ee.Reducer.minMax(),
+  geometry: maroc,
+  scale: 30,
+  maxPixels: 1e9
+});
+var stats_slope_ban = slope_ban.reduceRegion({
+  reducer: ee.Reducer.minMax(),
+  geometry: bangladesh,
+  scale: 30,
+  maxPixels: 1e9
+});
+
+//print('Min/Max SLOPE Maroc:', stats_slope_maroc);
+//print('Min/Max SLOPE BAN:', stats_slope_ban);
+
+//Map.addLayer(slope_maroc, {min:0, max: 74, palette: ['blue', 'white', 'red']}, 'SLOPE_MAROC');
+//Map.addLayer(slope_ban, {min:0, max: 19, palette: ['blue', 'white', 'red']}, 'SLOPE_BAN');
+Export.image.toDrive({
+  image: slope_ban,
+  description: "slope_bangladesh",
+  scale: 30,
+  region: bangladesh,
+  crs: "EPSG:4326",
+  maxPixels: 1e13
+});
+Export.image.toDrive({
+  image: slope_maroc,
+  description: "slope_maroc",
+  scale: 30,
+  region: maroc,
+  crs: "EPSG:4326",
+  maxPixels: 1e13
+});
+
+Export.image.toAsset({
+  image: slope_maroc,
+  description: 'Export_Slope_Maroc',
+  assetId: 'projects/ee-dembacoulibaly/assets/compa/slope_maroc',
+  region: maroc,
+  scale: 30,
+  maxPixels: 1e13
+});
+
+Export.image.toAsset({
+  image: slope_ban,
+  description: 'Export_Slope_Ban',
+  assetId: 'projects/ee-dembacoulibaly/assets/compa/slope_ban',
+  region: bangladesh,
+  scale: 30,
+  maxPixels: 1e13
+});
+
+var aspect_ma = ee.Terrain.aspect(srtm_maroc).rename('Aspect');
+var aspect_bg = ee.Terrain.aspect(srtm_bangla).rename('Aspect');
+var stats_aspect_ma = aspect_ma.reduceRegion({
+  reducer: ee.Reducer.minMax(),
+  geometry: maroc,
+  scale: 30,
+  maxPixels: 1e9
+});
+var stats_aspect_bgn = aspect_bg.reduceRegion({
+  reducer: ee.Reducer.minMax(),
+  geometry: bangladesh,
+  scale: 30,
+  maxPixels: 1e9
+});
+
+//print('Min/Max ASPECT Maroc:', stats_aspect_ma);
+//print('Min/Max ASPECT BAN:', stats_aspect_bgn);
+//Map.addLayer(aspect_ma, {min: 0, max: 359, palette: ['blue', 'cyan', 'green', 'yellow', 'red']},'ASPECT_MA');
+//Map.addLayer(aspect_bg, {min: 0, max: 357, palette: ['blue', 'cyan', 'green', 'yellow', 'red']},'ASPECT_BG');
+
+Export.image.toAsset({
+  image: aspect_ma,
+  description: 'Export_Aspect_Maroc',
+  assetId: 'projects/ee-dembacoulibaly/assets/compa/aspect_maroc',
+  region: maroc,
+  scale: 30,
+  maxPixels: 1e13
+});
+
+Export.image.toAsset({
+  image: aspect_bg,
+  description: 'Export_Aspect_Ban',
+  assetId: 'projects/ee-dembacoulibaly/assets/compa/aspect_ban',
+  region: bangladesh,
+  scale: 30,
+  maxPixels: 1e13
+});
+
+
+var ban_rad = slope_ban.multiply(Math.PI).divide(180).tan().updateMask(slope_ban.gt(0.001));
+var mar_rad = slope_maroc.multiply(Math.PI).divide(180).tan().updateMask(slope_maroc.gt(0.001));
+
+//Calcul du TWI
+var Flow_ma = Flow_accma. clip(maroc)
+var Flow_ba = Flow_accba. clip(bangladesh)
+var twi_mar = Flow_ma.divide(mar_rad).log().rename('TWI');
+var twi_ban = Flow_ba.divide(ban_rad).log().rename('TWI');
+
+var stats_twi_mar = twi_mar.reduceRegion({
+  reducer: ee.Reducer.minMax(),
+  geometry: maroc,
+  scale: 30,
+  maxPixels: 1e9
+});
+var stats_twi_ban = twi_ban.reduceRegion({
+  reducer: ee.Reducer.minMax(),
+  geometry: bangladesh,
+  scale: 30,
+  maxPixels: 1e9
+});
+
+//print('Min/Max TWI Maroc:', stats_twi_mar);
+//print('Min/Max TWI BAN:', stats_twi_ban);
+//Map.addLayer(twi_mar, {min: -2, max: 16, palette: ['blue', 'green', 'yellow', 'red']}, 'TW_MAR');
+//Map.addLayer(twi_ban, {min: 0, max: 19, palette: ['blue', 'green', 'yellow', 'red']}, 'TWI_BAN');
+
+Export.image.toAsset({
+  image: twi_mar,
+  description: 'Export_TWI_Maroc',
+  assetId: 'projects/ee-dembacoulibaly/assets/compa/twi_maroc',
+  region: maroc,
+  scale: 30,
+  maxPixels: 1e13
+});
+
+Export.image.toAsset({
+  image: twi_ban,
+  description: 'Export_TWI_Ban',
+  assetId: 'projects/ee-dembacoulibaly/assets/compa/twi_ban',
+  region: bangladesh,
+  scale: 30,
+  maxPixels: 1e13
+});
+
+
+// Calcul du SPI avec la formule SPI = A * tan(θ)
+// Pente en radians et tangente
+var slope_mar_rad = slope_maroc.multiply(Math.PI).divide(180).tan();
+var slope_ban_rad = slope_ban.multiply(Math.PI).divide(180).tan();
+
+// Aire spécifique de drainage (flow_accumulation × cellsize²)
+var As_mar = Flow_ma.multiply(30);
+var As_ban = Flow_ba.multiply(30);
+
+// SPI
+var spi_mar = As_mar.multiply(slope_mar_rad).rename('SPI');
+var spi_ban = As_ban.multiply(slope_ban_rad).rename('SPI');
+
+
+var stats_spi_mar = spi_mar.reduceRegion({
+  reducer: ee.Reducer.minMax(),
+  geometry: maroc,
+  scale: 30,
+  maxPixels: 1e9
+});
+var stats_spi_ban = spi_ban.reduceRegion({
+  reducer: ee.Reducer.minMax(),
+  geometry: bangladesh,
+  scale: 30,
+  maxPixels: 1e9
+});
+
+//print('Min/Max SPI Maroc:', stats_spi_mar);
+//print('Min/Max SPI BAN:', stats_spi_ban);
+
+//Map.addLayer(spi_mar, {min: 0, max: 4156, palette: ['blue', 'green', 'yellow', 'red']}, 'SPI_mar');
+//Map.addLayer(spi_ban, {min: 0, max: 401369, palette: ['blue', 'green', 'yellow', 'red']}, 'SPI_ban');
+
+Export.image.toAsset({
+  image: spi_mar,
+  description: 'Export_SPI_Mask_Maroc',
+  assetId: 'projects/ee-dembacoulibaly/assets/compa/spi_mask_maroc',
+  region: maroc,
+  scale: 30,
+  maxPixels: 1e13
+});
+
+Export.image.toAsset({
+  image: spi_ban,
+  description: 'Export_SPI_Mask_Ban',
+  assetId: 'projects/ee-dembacoulibaly/assets/compa/spi_mask_ban',
+  region: bangladesh,
+  scale: 30,
+  maxPixels: 1e13
+});
+
+
+// Calcul de la précipitation
+var precip_mar = ee.ImageCollection("UCSB-CHG/CHIRPS/DAILY")
+               .filterDate('2021-01-01','2021-11-30') // Modifier la période
+               .select('precipitation');
+var precip_ban = ee.ImageCollection("UCSB-CHG/CHIRPS/DAILY")
+               .filterDate('2024-01-01','2024-11-30') // Modifier la période
+               .select('precipitation');
+var annualprecipi_mar = precip_mar.sum();
+var annualprecipi_ban = precip_ban.sum();
+var precipitation_mar = annualprecipi_mar.clip(maroc)
+var precipitation_ban = annualprecipi_ban.clip(bangladesh)
+var palette = ['white', 'blue', 'cyan', 'green', 'yellow', 'red'];
+var visParams = {
+  min: 482,  
+  max: 532, 
+  palette: palette
+};
+var visParamsba = {
+  min: 3807,  
+  max: 4577, 
+  palette: palette
+};
+
+Export.image.toDrive({
+  image: precipitation_ban,
+  description: "preci_bangladesh",
+  region: bangladesh,
+  crs: "EPSG:4326",
+  scale: 10,        // degrés/pixel
+  maxPixels: 1e13
+});
+
+Export.image.toDrive({
+  image: precipitation_mar,
+  description: "preci_maroc",
+  region: maroc,
+  crs: "EPSG:4326",
+  scale: 10,        // degrés/pixel
+  maxPixels: 1e13
+});
+
+
+var stats_precipitation_mar = precipitation_mar.reduceRegion({
+  reducer: ee.Reducer.minMax(),
+  geometry: maroc,
+  scale: 30,
+  maxPixels: 1e9
+});
+var stats_precipitation_ban = precipitation_ban.reduceRegion({
+  reducer: ee.Reducer.minMax(),
+  geometry: bangladesh,
+  scale: 30,
+  maxPixels: 1e9
+});
+
+//print('Min/Max PRECIPITATION Maroc:', stats_precipitation_mar);
+//print('Min/Max PRECIPITATION BAN:', stats_precipitation_ban);
+
+//Map.addLayer(precipitation_mar, visParams, "Précipitation_mar (2021)");
+//Map.addLayer(precipitation_ban, visParamsba, "Précipitations_ban (2024)");
+
+Export.image.toAsset({
+  image: precipitation_mar,
+  description: 'Export_Precipitation_Maroc',
+  assetId: 'projects/ee-dembacoulibaly/assets/compa/precipitation_maroc',
+  region: maroc,
+  scale: 30,
+  maxPixels: 1e13
+});
+
+Export.image.toAsset({
+  image: precipitation_ban,
+  description: 'Export_Precipitation_Ban',
+  assetId: 'projects/ee-dembacoulibaly/assets/compa/precipitation_ban',
+  region: bangladesh,
+  scale: 30,
+  maxPixels: 1e13
+});
+
+
+
+
+// Calcul du TPI
+
+
+var kerma = ee.Kernel.circle({radius: 100, units: 'meters', normalize: false});
+var kerba = ee.Kernel.circle({radius: 50, units: 'meters', normalize: false});
+// Calcul de la moyenne locale avec un filtre focal
+var mean_elevba = srtm_bangla.focalMean({kernel: kerba});
+var mean_elevma = srtm_maroc.focalMean({kernel: kerma});
+// Calcul du TPI
+var tpi_ma = srtm_maroc.subtract(mean_elevma).rename('TPI_MAROC');
+var tpi_ba = srtm_bangla.subtract(mean_elevba).rename('TPI');
+
+var stats_tpi_ma = tpi_ma.reduceRegion({
+  reducer: ee.Reducer.minMax(),
+  geometry: maroc,
+  scale: 30,
+  maxPixels: 1e9
+});
+var stats_tpi_ba = tpi_ba.reduceRegion({
+  reducer: ee.Reducer.minMax(),
+  geometry: bangladesh,
+  scale: 30,
+  maxPixels: 1e9
+});
+
+//print('Min/Max TPI Maroc:', stats_tpi_ma);
+//print('Min/Max TPI BAN:', stats_tpi_ba);
+//Map.addLayer(tpi_ma, {min:-57, max: 72, palette: ['blue', 'white', 'red']}, 'TPI');
+//Map.addLayer(tpi_ba, {min:-6, max: 12, palette: ['blue', 'white', 'red']}, 'TPI_BANG');
+Export.image.toAsset({
+  image: tpi_ma,
+  description: 'Export_TPI_Maroc',
+  assetId: 'projects/ee-dembacoulibaly/assets/compa/tpi_maroc',
+  region: maroc,
+  scale: 30,
+  maxPixels: 1e13
+});
+
+Export.image.toAsset({
+  image: tpi_ba,
+  description: 'Export_TPI_Ban',
+  assetId: 'projects/ee-dembacoulibaly/assets/compa/tpi_ban',
+  region: bangladesh,
+  scale: 30,
+  maxPixels: 1e13
+});
+
+
+// Cancul du NDVI
+var data_mar = ee.ImageCollection("COPERNICUS/S2_SR_HARMONIZED")
+.filterDate("2021-02-01","2021-04-30")
+.filterBounds(maroc)
+.median();
+
+var data_ban = ee.ImageCollection("COPERNICUS/S2_SR_HARMONIZED")
+.filterDate("2024-09-01","2024-10-30")
+.filterBounds(bangladesh)
+.median();
+
+var NIR_mar = data_mar.select('B8');
+var RED_mar = data_mar.select('B4');
+var ndvi_mar = NIR_mar.subtract(RED_mar).divide(NIR_mar.add(RED_mar)).rename('NDVI');
+var NDVI_mar = ndvi_mar.clip(maroc)
+//Map.addLayer(NDVI_mar, {min: -1, max: 1, palette: ['blue','yellow', 'green']}, "NDVI_mar");
+
+var NIR_ban = data_ban.select('B8');
+var RED_ban = data_ban.select('B4');
+var ndvi_ban = NIR_ban.subtract(RED_ban).divide(NIR_ban.add(RED_ban)).rename('NDVI');
+var NDVI_ban = ndvi_ban.clip(bangladesh)
+//Map.addLayer(NDVI_ban, {min: -1, max: 1, palette: ['blue','yellow', 'green']}, "NDVI_ban");
+
+Export.image.toAsset({
+  image: NDVI_mar,
+  description: 'Export_NDVI_Maroc',
+  assetId: 'projects/ee-dembacoulibaly/assets/compa/ndvi_maroc',
+  region: maroc,
+  scale: 30,
+  maxPixels: 1e13
+});
+
+Export.image.toAsset({
+  image: NDVI_ban,
+  description: 'Export_NDVI_Ban',
+  assetId: 'projects/ee-dembacoulibaly/assets/compa/ndvi_ban',
+  region: bangladesh,
+  scale: 30,
+  maxPixels: 1e13
+});
+
+
+
+// Calcul de la Plan Curvature 
+var plan_curvaturemaroc = plancur_ma.clip(maroc);
+//Map.addLayer(plan_curvaturemaroc, {min: -0.5, max: 0.5, palette: ['blue', 'white', 'red']}, 'Plan Curvature');
+
+var plan_curvatureban = plancur_ba.clip(bangladesh);
+//Map.addLayer(plan_curvatureban, {min: -0.5, max: 0.5, palette: ['blue', 'white', 'red']}, 'Plan Curvature bangla');
+
+var stats_plan_curvaturemaroc = plan_curvaturemaroc.reduceRegion({
+  reducer: ee.Reducer.minMax(),
+  geometry: maroc,
+  scale: 30,
+  maxPixels: 1e9
+});
+var stats_plan_curvatureban = plan_curvatureban.reduceRegion({
+  reducer: ee.Reducer.minMax(),
+  geometry: bangladesh,
+  scale: 30,
+  maxPixels: 1e9
+});
+
+//print('Min/Max PlCcur Maroc:', stats_plan_curvaturemaroc);
+//print('Min/Max PlCcur BAN:', stats_plan_curvatureban);
+Export.image.toAsset({
+  image: plan_curvaturemaroc,
+  description: 'Export_PlanCurvature_Maroc',
+  assetId: 'projects/ee-dembacoulibaly/assets/compa/plan_curvature_maroc',
+  region: maroc,
+  scale: 30,
+  maxPixels: 1e13
+});
+
+Export.image.toAsset({
+  image: plan_curvatureban,
+  description: 'Export_PlanCurvature_Ban',
+  assetId: 'projects/ee-dembacoulibaly/assets/compa/plan_curvature_ban',
+  region: bangladesh,
+  scale: 30,
+  maxPixels: 1e13
+});
+
+
+// Fonction pour créer la carte LULC pour une région donnée
+var s2 = ee.ImageCollection("COPERNICUS/S2_SR_HARMONIZED")
+    .filterBounds(maroc)
+    .filterDate('2021-01-01', '2021-08-30')
+    .filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE', 5))
+    .median()
+    .clip(maroc); 
+
+  var bands10m = ['B2', 'B3', 'B4', 'B8'];
+  var bands20m = ['B11'];
+  var image = s2.select(bands10m);
+  var img20_10m = s2.select(bands20m).resample('bilinear')
+                 .reproject({crs: image.projection(), scale: 10});
+
+// Indices
+var addIndices = function(img) {
+  var ndvi = img.normalizedDifference(['B8','B4']).rename('NDVI');
+  var ndwi = img.normalizedDifference(['B3','B8']).rename('NDWI');        
+  var ndbi = img.normalizedDifference(['B11','B8']).rename('NDBI');       
+  var bsi = img.expression(
+    '((SWIR + RED) - (NIR + BLUE)) / ((SWIR + RED) + (NIR + BLUE))', {
+      'SWIR': img.select('B11'),
+      'RED' : img.select('B4'),
+      'NIR' : img.select('B8'),
+      'BLUE': img.select('B2')
+    }).rename('BSI');
+
+  return img.addBands([ndvi, ndwi, ndbi, bsi]);
+};
+var featImg = addIndices(image.addBands(img20_10m));
+
+// Liste finale de variables
+var bands = featImg.bandNames(); 
+//print('Bands utilisées', bands); 
+
+// Créer les données d’entraînement
+var water = ee.FeatureCollection([ee.Feature(water_ma, {"class": 0})]);
+var culture = ee.FeatureCollection([ee.Feature(culture_ma, {"class": 1})]);
+var building = ee.FeatureCollection([ee.Feature(building_ma, {"class": 2})]);
+var vegetation = ee.FeatureCollection([ee.Feature(vegetation_ma, {"class": 3})]);
+var barren_land = ee.FeatureCollection([ee.Feature(barren_landma, {"class": 4})]);
+
+var trainingData_maroc = water.merge(culture).merge(building).merge(vegetation).merge(barren_land);
+
+  var training = featImg.sampleRegions({
+    collection: trainingData_maroc,
+    properties: ['class'],
+    scale: 10
+  });
+  
+//print('Nombre total de pixels dans trainingData_MA:', training.size());
+var trainingData =training.randomColumn();
+
+var trainingset =trainingData.filter(ee.Filter.lessThan('random', 0.8));
+var testset =trainingData.filter(ee.Filter.greaterThanOrEquals('random', 0.8));
+
+  var classifier = ee.Classifier.smileRandomForest(64).train({
+    features: trainingset,
+    classProperty: 'class',
+    inputProperties: bands
+  });
+
+var cart_classifier = ee.Classifier.smileCart().train({
+  features: trainingset,
+  classProperty: 'class',
+  inputProperties: bands
+});
+
+// Calculate classification accuracy/assessment
+var confusionMatrix = ee.ConfusionMatrix(testset.classify(classifier).errorMatrix({actual: 'class', predicted: 'classification'}));
+var confusionMatrix_CART = ee.ConfusionMatrix(
+  testset.classify(cart_classifier)
+        .errorMatrix({actual: 'class', predicted: 'classification'})
+);
+
+//print('Confusion Matrix:', confusionMatrix);
+//print('Overall Accuracy:', confusionMatrix.accuracy());
+//print('Pruducer's accuracy:',  confusionMatrix.producersAccuracy())
+//print('User's accuracy:',  confusionMatrix.usersAccuracy())
+
+//print('Confusion Matrix CART:', confusionMatrix_CART);
+//print('Overall Accuracy CART:', confusionMatrix_CART.accuracy());
+//print('Pruducer's accuracycart:',  confusionMatrix_CART.producersAccuracy())
+//print('User's accuracycart:',  confusionMatrix_CART.usersAccuracy())
+
+// Kappa validation
+var kappa = confusionMatrix.kappa();
+var kappa_cart = confusionMatrix_CART.kappa();
+//print('Kappa', kappa);
+//print('Kappa CART:', kappa_cart);
+
+// Apply classification
+var classified_maroc = featImg.classify(classifier);
+var classified_marocCart = featImg.classify(cart_classifier);
+// Palette de couleurs pour la carte LULC
+  var palette = ['0000FF', '008000', 'FF0000', 'FFFF00','808080']; // Eau, culture, Bâtiment, vegetation, Terre stérile
+
+//Map.addLayer(classified_maroc, {min: 0, max: 4, palette: palette}, 'LULC Maroc');
+
+Export.image.toAsset({
+    image: classified_maroc,
+    description: 'Export_LULC_Maroc',
+    assetId: 'projects/ee-dembacoulibaly/assets/compa/lulc_maroc',
+    region: maroc,
+    scale: 30,
+    maxPixels: 1e13
+  });
+Export.image.toDrive({
+  image: classified_marocCart,
+  description: "LULC_MarocCART",
+  scale: 10,
+  region: maroc,
+  crs: "EPSG:4326",
+  maxPixels: 1e13
+});
+  // Charger Sentinel-2, filtrer par zone, date et couverture nuageuse
+var lulcban = ee.ImageCollection("COPERNICUS/S2_SR_HARMONIZED")
+  .filterBounds(bangladesh)
+  .filterDate('2024-06-01', '2024-12-30')
+  .filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE',(5)))
+  .median()
+  .clip(bangladesh);
+
+var bands10 = ['B2','B3','B4','B8'];
+var image10 = lulcban.select(bands10);
+// Sélectionner la bande 20m et reprojeter sur 10m
+var image20 = lulcban.select('B11')
+              .resample('bilinear')
+              .reproject({crs: image10.select(0).projection(), scale: 10});
+// Combiner toutes les bandes
+var fullImage = image10.addBands(image20);
+
+// Indices
+var addIndices = function(img) {
+  var ndvi = img.normalizedDifference(['B8', 'B4']).rename('NDVI');
+  var ndwi = img.normalizedDifference(['B3', 'B8']).rename('NDWI');
+  var ndbi = img.normalizedDifference(['B11', 'B8']).rename('NDBI');
+  var bsi = img.expression(
+    '((SWIR + RED) - (NIR + BLUE)) / ((SWIR + RED) + (NIR + BLUE))', {
+      'SWIR': img.select('B11'),
+      'RED' : img.select('B4'),
+      'NIR' : img.select('B8'),
+      'BLUE': img.select('B2')
+    }).rename('BSI');
+  
+  return img.addBands([ndvi, ndwi, ndbi, bsi]);
+};
+
+var featImg = addIndices(fullImage);
+var allBands = featImg.bandNames(); 
+
+var waterba = ee.FeatureCollection([ee.Feature(water_ba, {"class": 0})]);
+var cultureba = ee.FeatureCollection([ee.Feature(culture_ba, {"class": 1})]);
+var buildingba = ee.FeatureCollection([ee.Feature(building_ba, {"class": 2})]);
+var vegetationba = ee.FeatureCollection([ee.Feature(vegetation_ba, {"class": 3})]);
+
+var trainingData_ban = waterba.merge(cultureba).merge(buildingba).merge(vegetationba);
+
+var trainingba = featImg.unmask().sampleRegions({
+    collection: trainingData_ban,
+    properties: ['class'],
+    scale: 10,
+  });
+
+//print('Nombre total de pixels dans trainingData_ba:', trainingba.size());
+var trainingDataba =trainingba.randomColumn();
+
+var trainingsetba =trainingDataba.filter(ee.Filter.lessThan('random', 0.8));
+var testsetba =trainingDataba.filter(ee.Filter.greaterThanOrEquals('random', 0.8));
+
+  var classifierba = ee.Classifier.smileRandomForest(64).train({
+    features: trainingsetba,
+    classProperty: 'class',
+    inputProperties: allBands
+  });
+
+var cart_classifierba = ee.Classifier.smileCart().train({
+  features: trainingsetba,
+  classProperty: 'class',
+  inputProperties: allBands
+});
+// Calculate classification accuracy/assessment
+var confusionMatrixba = ee.ConfusionMatrix(testsetba.classify(classifierba).errorMatrix({actual: 'class', predicted: 'classification'}));
+var confusionMatrixba_CART = ee.ConfusionMatrix(
+  testsetba.classify(cart_classifierba)
+        .errorMatrix({actual: 'class', predicted: 'classification'})
+);
+
+//print('Confusion Matrixba:', confusionMatrixba);
+//print('Overall Accuracyba:', confusionMatrixba.accuracy());
+//print('Pruducer accuracyba:',  confusionMatrixba.producersAccuracy())
+//print('User accuracyba:',  confusionMatrixba.usersAccuracy())
+
+//print('Confusion Matrix CART:', confusionMatrixba_CART);
+//print('Overall Accuracy CART:', confusionMatrixba_CART.accuracy());
+//print('Pruducer's accuracybacart:',  confusionMatrixba_CART.producersAccuracy())
+//print('User's accuracybacart:',  confusionMatrixba_CART.usersAccuracy())
+
+// Kappa validation
+//var kappaba = confusionMatrixba.kappa();
+//var kappaba_cart = confusionMatrixba_CART.kappa();
+//print('Kappaba', kappaba);
+//print('Kappaba CART:', kappaba_cart);
+
+
+var classified_bangladesh_full = featImg.unmask().classify(classifierba);
+var classified_bangladesh = classified_bangladesh_full.clip(bangladesh);
+var classified_bangladeshCARTfull = featImg.unmask().classify(cart_classifierba);
+var classified_bangladeshcart = classified_bangladeshCARTfull.clip(bangladesh);
+
+  // Palette de couleurs pour la carte LULC
+ var palette = ['0000FF', '008000', 'FF0000', 'FFFF00']; // Eau, culture, Bâtiment, vegetation
+
+  // Affichage sur la carte
+//Map.centerObject(bangladesh, 10);
+//Map.addLayer(classified_bangladesh, {min: 0, max: 3, palette: palette}, 'LULC bangladesh');
+Export.image.toAsset({
+  image: classified_bangladesh,
+  description: 'Export_LULC_Bangladesh',
+  assetId: 'projects/ee-dembacoulibaly/assets/compa/lulc_bangladesh',
+  region: bangladesh,
+  scale: 30,
+  maxPixels: 1e13
+});
+
+Export.image.toDrive({
+  image: classified_bangladeshcart,
+  description: "lulc_banCART",
+  scale: 10,
+  region: bangladesh,
+  crs: "EPSG:4326",
+  maxPixels: 1e13
+});
+
+
+//Map.centerObject(maroc, 8);
+var dis_rima = dis_rima.clip(maroc)
+//Map.addLayer(drai_ma, {min: 0, max: 165, palette: ['green', 'yellow', 'red']}, "densite drainage ma");
+//Map.addLayer(dis_rima, {min: 0, max: 0.05, palette: ['red', 'yellow', 'cyan', 'green', 'blue', 'white']}, "distance to river ma");
+//Map.addLayer(dist_riba, {min: 0, max: 0.02, palette: ['red', 'yellow', 'cyan', 'green', 'blue', 'white']}, "distance to river ba");
+//Map.addLayer(drai_ba, {min:12, max: 143, palette: ['green', 'yellow', 'red']}, "densite drainage ba");
+//var ri_ma = drai_ma.reduceRegion({
+//  reducer: ee.Reducer.minMax(),
+//  geometry: maroc,
+//  scale: 30, // résolution du SRTM (en mètres)
+//  maxPixels: 1e9
+//});
+
+// Affichage dans la console
+//print('Min et Max SRTM sur le Maroc', ri_ma);
+
+
+// change detection maroc
+
+var collection = ee.ImageCollection("COPERNICUS/S1_GRD")
+.filterBounds(maroc)
+.filter(ee.Filter.listContains("transmitterReceiverPolarisation","VH"))
+.filter(ee.Filter.eq('instrumentMode', 'IW'))
+.filter(ee.Filter.or(ee.Filter.eq('orbitProperties_pass','DESCENDING'),ee.Filter.eq('orbitProperties_pass','ASCENDING')));
+
+// Filter to before and after flood imagery
+var before = collection.filterDate("2021-01-06","2021-01-09").filterBounds(maroc)
+var after = collection.filterDate("2021-01-10","2021-01-13").filterBounds(maroc)
+
+//print(before)
+//print(after)
+
+
+var before_clip = before.select('VH').mosaic().clip(maroc);
+var after_clip = after.select('VH').mosaic().clip(maroc);
+
+var before_filtered = ee.Image(toDB(RefinedLee(toNatural(before_clip))));
+var after_filtered = ee.Image(toDB(RefinedLee(toNatural(after_clip))));
+
+var flood = before_filtered.gt(-20).and(after_filtered.lt(-20));
+var flood_mask = flood.updateMask(flood.eq(1));
+var water = before_filtered.lt(-20).and(after_filtered.lt(-20));
+var water_mask = water.updateMask(water.eq(1));
+var non_flood = flood.not().and(water.not());
+var non_flood_mask = non_flood.updateMask(non_flood);
+
+Map.centerObject(maroc);
+//Map.addLayer(flood_mask,{palette:['RED']},'Flood_Inundation')
+//Map.addLayer(water_mask,{palette:['Blue']},'Water')
+//Map.addLayer(non_flood_mask, {palette: ['green']}, 'Zones non inondées');
+
+//print('Nombre de pixels inondés :', flood_mask.reduceRegion({
+ // reducer: ee.Reducer.sum(),
+ // geometry: maroc,
+  //scale: 10,
+  //maxPixels: 1e13
+//}));
+
+// Exporter la zone inondée vers Google Drive
+
+// Convertir le masque en polygones
+var zones_inondees = flood_mask.reduceToVectors({
+  geometry: maroc,
+  scale: 30,
+  geometryType: 'polygon',
+  maxPixels: 1e13
+});
+
+
+var points = ee.FeatureCollection.randomPoints({
+  region: zones_inondees.geometry(),
+  points: 260,
+  seed: 42
+});
+
+var zones_non_inondees = non_flood_mask.reduceToVectors({
+  geometry: maroc,
+  scale: 30,
+  geometryType: 'polygon',
+  maxPixels: 1e13
+});
+
+// Générer des points aléatoires dans les zones non inondées
+var points_non_inondees = ee.FeatureCollection.randomPoints({
+  region: zones_non_inondees.geometry(),
+  points: 65,
+  seed: 42
+});
+
+// Exporter les points non inondés
+Export.table.toDrive({
+  collection: points_non_inondees,
+  description: 'Export_nflpointsma',
+  folder: '40NF',        
+  fileNamePrefix: '400maroc',     
+  fileFormat: 'SHP'
+});
+
+
+Export.image.toAsset({
+  image: flood_mask,
+  description: 'Flood_pointte',
+  assetId: 'projects/ee-dembacoulibaly/assets/compa/Flood_pointte',
+  region: maroc,
+  scale: 30,
+  maxPixels: 1e13
+});
+
+Export.image.toAsset({
+  image: non_flood_mask,
+  description: 'NoFlood_pointte',
+  assetId: 'projects/ee-dembacoulibaly/assets/compa/NoFlood_pointte',
+  region: maroc,
+  scale: 30,
+  maxPixels: 1e13
+});
+
+// Exporter les points non inondés
+//Export.table.toAsset({
+  //collection: points,  //
+  //description: 'Export_flpoints',  // 
+  //assetId: 'projects/ee-dembacoulibaly/assets/compa/flpoints'  // 
+//});
+//Export.table.toAsset({
+  //collection: points_non_inondees,  //
+  //description: 'Export_flpoints',  // 
+  //assetId: 'projects/ee-dembacoulibaly/assets/compa/non_flpoints'  // 
+//});
+// change detection bangladesh
+
+var collection_ba = ee.ImageCollection("COPERNICUS/S1_GRD")
+.filterBounds(bangladesh)
+.filter(ee.Filter.listContains("transmitterReceiverPolarisation","VH"))
+.filter(ee.Filter.eq('instrumentMode', 'IW'))
+.filter(ee.Filter.or(ee.Filter.eq('orbitProperties_pass','DESCENDING'),ee.Filter.eq('orbitProperties_pass','ASCENDING')));
+
+// Filter to before and after flood imagery
+var before_ba = collection_ba.filterDate("2024-06-12","2024-06-15").filterBounds(bangladesh)
+var after_ba = collection_ba.filterDate("2024-06-16","2024-06-19").filterBounds(bangladesh)
+
+print(before_ba)
+print(after_ba)
+
+var beforeba_clip = before_ba.select('VH').mosaic().clip(bangladesh)
+var afterba_clip = after_ba.select('VH').mosaic().clip(bangladesh)
+
+
+var beforeba_filtered = ee.Image(toDB(RefinedLee(toNatural(beforeba_clip))))
+var afterba_filtered = ee.Image(toDB(RefinedLee(toNatural(afterba_clip))))
+
+var flood_ba = beforeba_filtered.gt(-20).and(afterba_filtered.lt(-20));
+var floodba_mask = flood_ba.updateMask(flood_ba.eq(1));
+var waterba = beforeba_filtered.lt(-20).and(afterba_filtered.lt(-20));
+var waterba_mask = waterba.updateMask(waterba.eq(1));
+var non_floodba = flood_ba.not().and(waterba.not());
+var non_floodba_mask = non_floodba.updateMask(non_floodba);
+
+
+//Map.centerObject(bangladesh);
+//Map.addLayer(floodba_mask,{palette:['RED']},'Flood_Inundation ba')
+//Map.addLayer(waterba_mask,{palette:['Blue']},'Water ba')
+//Map.addLayer(non_floodba_mask, {palette: ['green']}, 'Zones non inondées ba');
+
+
+// Convertir le masque en polygones
+var zones_inondeesba = floodba_mask.reduceToVectors({
+  geometry: bangladesh,
+  scale: 10,
+  geometryType: 'polygon',
+  maxPixels: 1e13
+});
+
+// Générer des points aléatoires dans ces polygones
+var pointsba = ee.FeatureCollection.randomPoints({
+  region: zones_inondeesba.geometry(),
+  points: 1000,
+  seed: 42
+});
+
+
+var zones_non_inondeesba = non_floodba_mask.reduceToVectors({
+  geometry: bangladesh,
+  scale: 10,
+  geometryType: 'polygon',
+  maxPixels: 1e13
+});
+
+// Générer des points aléatoires dans les zones non inondées
+var points_non_inondeesba = ee.FeatureCollection.randomPoints({
+  region: zones_non_inondeesba.geometry(),
+  points: 400,
+  seed: 42
+});
+
+
+Export.image.toAsset({
+  image: floodba_mask,
+  description: 'Flood_pointba',
+  assetId: 'projects/ee-dembacoulibaly/assets/compa/Flood_pointba',
+  region: bangladesh,
+  scale: 30,
+  maxPixels: 1e13
+});
+
+Export.image.toAsset({
+  image: non_floodba_mask,
+  description: 'NoFlood_pointba',
+  assetId: 'projects/ee-dembacoulibaly/assets/compa/NoFlood_pointba',
+  region: bangladesh,
+  scale: 30,
+  maxPixels: 1e13
+});
+// Exporter les points non inondés
+//Export.table.toAsset({
+  //collection: pointsba,  //
+ // description: 'Export_flpointsba',  // 
+ // assetId: 'projects/ee-dembacoulibaly/assets/compa/flpointsba'  // 
+//});
+//Export.table.toAsset({
+ // collection: points_non_inondeesba,  //
+ // description: 'Export_flpointsba',  // 
+  //assetId: 'projects/ee-dembacoulibaly/assets/compa/non_flpointsba'  // 
+//});
+
+Export.table.toDrive({
+  collection: points_non_inondeesba,
+  description: 'Export_nflpointsba',
+  folder: '40NF',        
+  fileNamePrefix: '400ban',     // Nom du fichier exporté
+  fileFormat: 'SHP'
+});
+//############################
+// Speckle Filtering Functions
+//############################
+
+// Function to convert from d
+function toNatural(img) {
+  return ee.Image(10.0).pow(img.select(0).divide(10.0));
+}
+
+//Function to convert to dB
+function toDB(img) {
+  return ee.Image(img).log10().multiply(10.0);
+}
+
+//Apllying a Refined Lee Speckle filter as coded in the SNAP 3.0 S1TBX:
+
+//https://github.com/senbox-org/s1tbx/blob/master/s1tbx-op-sar-processing/src/main/java/org/esa/s1tbx/sar/gpf/filtering/SpeckleFilters/RefinedLee.java
+//Adapted by Guido Lemoine
+
+// by Guido Lemoine
+function RefinedLee(img) {
+  // img must be in natural units, i.e. not in dB!
+  // Set up 3x3 kernels 
+  var weights3 = ee.List.repeat(ee.List.repeat(1,3),3);
+  var kernel3 = ee.Kernel.fixed(3,3, weights3, 1, 1, false);
+
+  var mean3 = img.reduceNeighborhood(ee.Reducer.mean(), kernel3);
+  var variance3 = img.reduceNeighborhood(ee.Reducer.variance(), kernel3);
+
+  // Use a sample of the 3x3 windows inside a 7x7 windows to determine gradients and directions
+  var sample_weights = ee.List([[0,0,0,0,0,0,0], [0,1,0,1,0,1,0],[0,0,0,0,0,0,0], [0,1,0,1,0,1,0], [0,0,0,0,0,0,0], [0,1,0,1,0,1,0],[0,0,0,0,0,0,0]]);
+
+  var sample_kernel = ee.Kernel.fixed(7,7, sample_weights, 3,3, false);
+
+  // Calculate mean and variance for the sampled windows and store as 9 bands
+  var sample_mean = mean3.neighborhoodToBands(sample_kernel); 
+  var sample_var = variance3.neighborhoodToBands(sample_kernel);
+
+  // Determine the 4 gradients for the sampled windows
+  var gradients = sample_mean.select(1).subtract(sample_mean.select(7)).abs();
+  gradients = gradients.addBands(sample_mean.select(6).subtract(sample_mean.select(2)).abs());
+  gradients = gradients.addBands(sample_mean.select(3).subtract(sample_mean.select(5)).abs());
+  gradients = gradients.addBands(sample_mean.select(0).subtract(sample_mean.select(8)).abs());
+
+  // And find the maximum gradient amongst gradient bands
+  var max_gradient = gradients.reduce(ee.Reducer.max());
+
+  // Create a mask for band pixels that are the maximum gradient
+  var gradmask = gradients.eq(max_gradient);
+
+  // duplicate gradmask bands: each gradient represents 2 directions
+  gradmask = gradmask.addBands(gradmask);
+
+  // Determine the 8 directions
+  var directions = sample_mean.select(1).subtract(sample_mean.select(4)).gt(sample_mean.select(4).subtract(sample_mean.select(7))).multiply(1);
+  directions = directions.addBands(sample_mean.select(6).subtract(sample_mean.select(4)).gt(sample_mean.select(4).subtract(sample_mean.select(2))).multiply(2));
+  directions = directions.addBands(sample_mean.select(3).subtract(sample_mean.select(4)).gt(sample_mean.select(4).subtract(sample_mean.select(5))).multiply(3));
+  directions = directions.addBands(sample_mean.select(0).subtract(sample_mean.select(4)).gt(sample_mean.select(4).subtract(sample_mean.select(8))).multiply(4));
+  // The next 4 are the not() of the previous 4
+  directions = directions.addBands(directions.select(0).not().multiply(5));
+  directions = directions.addBands(directions.select(1).not().multiply(6));
+  directions = directions.addBands(directions.select(2).not().multiply(7));
+  directions = directions.addBands(directions.select(3).not().multiply(8));
+
+  // Mask all values that are not 1-8
+  directions = directions.updateMask(gradmask);
+
+  // "collapse" the stack into a singe band image (due to masking, each pixel has just one value (1-8) in it's directional band, and is otherwise masked)
+  directions = directions.reduce(ee.Reducer.sum());  
+
+  //var pal = ['ffffff','ff0000','ffff00', '00ff00', '00ffff', '0000ff', 'ff00ff', '000000'];
+  //Map.addLayer(directions.reduce(ee.Reducer.sum()), {min:1, max:8, palette: pal}, 'Directions', false);
+
+  var sample_stats = sample_var.divide(sample_mean.multiply(sample_mean));
+
+  // Calculate localNoiseVariance
+  var sigmaV = sample_stats.toArray().arraySort().arraySlice(0,0,5).arrayReduce(ee.Reducer.mean(), [0]);
+
+  // Set up the 7*7 kernels for directional statistics
+  var rect_weights = ee.List.repeat(ee.List.repeat(0,7),3).cat(ee.List.repeat(ee.List.repeat(1,7),4));
+
+  var diag_weights = ee.List([[1,0,0,0,0,0,0], [1,1,0,0,0,0,0], [1,1,1,0,0,0,0], 
+    [1,1,1,1,0,0,0], [1,1,1,1,1,0,0], [1,1,1,1,1,1,0], [1,1,1,1,1,1,1]]);
+
+  var rect_kernel = ee.Kernel.fixed(7,7, rect_weights, 3, 3, false);
+  var diag_kernel = ee.Kernel.fixed(7,7, diag_weights, 3, 3, false);
+
+  // Create stacks for mean and variance using the original kernels. Mask with relevant direction.
+  var dir_mean = img.reduceNeighborhood(ee.Reducer.mean(), rect_kernel).updateMask(directions.eq(1));
+  var dir_var = img.reduceNeighborhood(ee.Reducer.variance(), rect_kernel).updateMask(directions.eq(1));
+
+  dir_mean = dir_mean.addBands(img.reduceNeighborhood(ee.Reducer.mean(), diag_kernel).updateMask(directions.eq(2)));
+  dir_var = dir_var.addBands(img.reduceNeighborhood(ee.Reducer.variance(), diag_kernel).updateMask(directions.eq(2)));
+
+  // and add the bands for rotated kernels
+  for (var i=1; i<4; i++) {
+    dir_mean = dir_mean.addBands(img.reduceNeighborhood(ee.Reducer.mean(), rect_kernel.rotate(i)).updateMask(directions.eq(2*i+1)));
+    dir_var = dir_var.addBands(img.reduceNeighborhood(ee.Reducer.variance(), rect_kernel.rotate(i)).updateMask(directions.eq(2*i+1)));
+    dir_mean = dir_mean.addBands(img.reduceNeighborhood(ee.Reducer.mean(), diag_kernel.rotate(i)).updateMask(directions.eq(2*i+2)));
+    dir_var = dir_var.addBands(img.reduceNeighborhood(ee.Reducer.variance(), diag_kernel.rotate(i)).updateMask(directions.eq(2*i+2)));
+  }
+
+  // "collapse" the stack into a single band image (due to masking, each pixel has just one value in it's directional band, and is otherwise masked)
+  dir_mean = dir_mean.reduce(ee.Reducer.sum());
+  dir_var = dir_var.reduce(ee.Reducer.sum());
+
+  // A finally generate the filtered value
+  var varX = dir_var.subtract(dir_mean.multiply(dir_mean).multiply(sigmaV)).divide(sigmaV.add(1.0));
+
+  var b = varX.divide(dir_var);
+
+  var result = dir_mean.add(b.multiply(img.subtract(dir_mean)));
+  return(result.arrayFlatten([['sum']]));
+}
+
+
+
+// exporter mes point pictés
+var flood_points_list = PTinontetouan.coordinates();
+// Convertir chaque point en un Feature
+var flood_points_tetouan = ee.FeatureCollection(
+  flood_points_list.map(function(coord) {
+    return ee.Feature(ee.Geometry.Point(coord)); // 
+  })
+);
+
+// Exporter sous format SHP avec chaque point séparé
+Export.table.toAsset({
+  collection: flood_points_tetouan,
+  description: "exported_flood_points_tetouan",
+  assetId: 'projects/ee-dembacoulibaly/assets/flood_points_tetouan'  //
+});
+var non_flood_points_list = ptnoniniteto.coordinates();
+// Convertir chaque point en un Feature
+var non_flood_points_tetouan = ee.FeatureCollection(
+  non_flood_points_list.map(function(coord) {
+    return ee.Feature(ee.Geometry.Point(coord)); // 
+  })
+);
+
+// Exporter sous format SHP avec chaque point séparé
+Export.table.toAsset({
+  collection: non_flood_points_tetouan,
+  description: "exported_non_flood_points_tetouan",
+  assetId: 'projects/ee-dembacoulibaly/assets/non_flood_points_tetouan'  //
+});
+
+// BANGLADESH
+// exporter mes point pictés
+var flood_points_list_ban = PTINONBANG.coordinates();
+// Convertir chaque point en un Feature
+var flood_points_ban = ee.FeatureCollection(
+  flood_points_list_ban.map(function(coord) {
+    return ee.Feature(ee.Geometry.Point(coord)); // 
+  })
+);
+
+// Exporter sous format SHP avec chaque point séparé
+Export.table.toAsset({
+  collection: flood_points_ban,
+  description: "exported_flood_points_ban",
+  assetId: 'projects/ee-dembacoulibaly/assets/flood_points_ban'  //
+});
+var non_flood_points_list_ban = PTNONIONDBANG.coordinates();
+// Convertir chaque point en un Feature
+var non_flood_points_ban = ee.FeatureCollection(
+  non_flood_points_list_ban.map(function(coord) {
+    return ee.Feature(ee.Geometry.Point(coord)); // 
+  })
+);
+
+// Exporter sous format SHP avec chaque point séparé
+Export.table.toAsset({
+  collection: non_flood_points_ban,
+  description: "exported_non_flood_points_ban",
+  assetId: 'projects/ee-dembacoulibaly/assets/non_flood_points_ban'  //
+});
+
+////////////////////////////////////
+// --- 1. Appliquer le masque d'inondation sur la carte LULC
+var lulc_flooded = classified_maroc.updateMask(flood_mask);
+
+// --- 2. Palette des classes LULC (identique à ta légende de base)
+var palette = [
+  '0000FF', // Eau
+  '008000', // Culture
+  'FF0000', // Bâtiment
+  'FFFF00', // Végétation
+  '808080'  // Terre stérile
+];
+
+// --- 3. Visualiser la carte des zones inondées par classe LULC
+//Map.addLayer(lulc_flooded, {min: 0, max: 4, palette: palette}, 'Flood Damage by LULC');
+
+// --- 1. Appliquer le masque d'inondation sur la carte LULC
+var lulc_floodedba = classified_bangladesh.updateMask(floodba_mask);
+
+Export.image.toDrive({
+  image: lulc_flooded,
+  description: "lulc_floodedmaroc",
+  scale: 10,
+  region: maroc,
+  crs: "EPSG:4326",
+  maxPixels: 1e13
+});
+
+Export.image.toDrive({
+  image: lulc_floodedba,
+  description: "lulc_floodedban",
+  scale: 10,
+  region: bangladesh,
+  crs: "EPSG:4326",
+  maxPixels: 1e13
+});
